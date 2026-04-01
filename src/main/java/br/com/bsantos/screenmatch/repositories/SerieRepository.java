@@ -16,9 +16,15 @@ public interface SerieRepository extends JpaRepository<Serie, Long> {
 
     List<Serie> findByAtoresContainingIgnoreCase(String nomeAtor);
 
-    List<Serie> findByOrderByAvaliacaoDesc();
-
     List<Serie> findByGenero(Categoria genero);
+
+    List<Serie> findTop5ByOrderByAvaliacaoDesc();
+
+    @Query("SELECT s FROM Serie s " +
+            "JOIN s.episodios e " +
+            "GROUP BY s " +
+            "ORDER BY MAX(e.dataLancamento) DESC LIMIT 5")
+    List<Serie> findTop5ByOrderByEpisodiosDataLancamentoDesc();
 
     List<Serie> findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(int maxTemporada, double avaliacaoMin);
 

@@ -1,14 +1,13 @@
 package br.com.bsantos.screenmatch.controllers;
 
 import br.com.bsantos.screenmatch.dtos.SerieDTO;
-import br.com.bsantos.screenmatch.repositories.SerieRepository;
 import br.com.bsantos.screenmatch.services.SerieService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/series")
@@ -25,5 +24,18 @@ public class SerieController {
         return service.buscaTodasAsSeries();
     }
 
+    @GetMapping("/top5")
+    public List<SerieDTO> obtemTop5Series() {
+        return service.obtemTop5Series();
+    }
 
+    @GetMapping("/lancamentos")
+    public List<SerieDTO> obtemLacamentos() {
+        return service.obtemLancamentos();
+    }
+
+    @GetMapping("/{id}")
+    public SerieDTO buscaPorId(@PathVariable Long id) {
+        return service.buscaPorId(id);
+    }
 }

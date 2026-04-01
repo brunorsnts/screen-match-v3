@@ -175,7 +175,7 @@ public class Principal {
 
     private void top5Series() {
         AtomicInteger i = new AtomicInteger(1);
-        List<Serie> top5Series = repository.findByOrderByAvaliacaoDesc();
+        List<Serie> top5Series = repository.findTop5ByOrderByAvaliacaoDesc();
         top5Series.forEach(s -> {
             System.out.println(i + "° " + s.getTitulo() + " | " + s.getAvaliacao());
             i.getAndIncrement();
