@@ -1,5 +1,7 @@
 package br.com.bsantos.screenmatch.repositories;
 
+import br.com.bsantos.screenmatch.dtos.EpisodioDTO;
+import br.com.bsantos.screenmatch.dtos.SerieDTO;
 import br.com.bsantos.screenmatch.models.Categoria;
 import br.com.bsantos.screenmatch.models.Episodio;
 import br.com.bsantos.screenmatch.models.Serie;
@@ -39,4 +41,7 @@ public interface SerieRepository extends JpaRepository<Serie, Long> {
 
     @Query("SELECT e FROM Serie s JOIN s.episodios e WHERE s = :serieBuscada AND YEAR(e.dataLancamento) >= :ano")
     List<Episodio> filtraEpisodiosDeUmaSerieApartirDeUmaData(@Param("serieBuscada") Serie serieBuscada, @Param("ano") int ano);
+
+    @Query("SELECT e FROM Serie s JOIN s.episodios e WHERE s.id = :id AND e.temporada = :numTemporada")
+    List<Episodio> buscaEpisodiosPorTemporada(Long id, int numTemporada);
 }

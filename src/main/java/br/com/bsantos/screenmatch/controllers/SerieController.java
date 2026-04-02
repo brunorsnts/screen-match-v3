@@ -1,5 +1,6 @@
 package br.com.bsantos.screenmatch.controllers;
 
+import br.com.bsantos.screenmatch.dtos.EpisodioDTO;
 import br.com.bsantos.screenmatch.dtos.SerieDTO;
 import br.com.bsantos.screenmatch.services.SerieService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,5 +38,20 @@ public class SerieController {
     @GetMapping("/{id}")
     public SerieDTO buscaPorId(@PathVariable Long id) {
         return service.buscaPorId(id);
+    }
+
+    @GetMapping("{id}/temporadas/todas")
+    public List<EpisodioDTO> obtemTodosOsEpisodios(@PathVariable Long id) {
+        return service.obtemTodosOsEpisodios(id);
+    }
+
+    @GetMapping("{id}/temporadas/{numTemporada}")
+    public List<EpisodioDTO> obtemTodosOsEpisodiosPorTemporada(@PathVariable Long id, @PathVariable int numTemporada) {
+        return service.obtemTodosOsEpisodiosPorTemporada(id, numTemporada);
+    }
+
+    @GetMapping("/categoria/{genero}")
+    public List<SerieDTO> obtemSeriesPorGenero(@PathVariable String genero) {
+        return service.obtemSeriesPorGenero(genero);
     }
 }

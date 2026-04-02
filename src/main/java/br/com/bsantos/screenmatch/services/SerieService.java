@@ -1,6 +1,8 @@
 package br.com.bsantos.screenmatch.services;
 
+import br.com.bsantos.screenmatch.dtos.EpisodioDTO;
 import br.com.bsantos.screenmatch.dtos.SerieDTO;
+import br.com.bsantos.screenmatch.models.Categoria;
 import br.com.bsantos.screenmatch.models.Serie;
 import br.com.bsantos.screenmatch.repositories.SerieRepository;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,32 @@ public class SerieService {
         }
 
         return null;
+    }
+
+    public List<EpisodioDTO> obtemTodosOsEpisodios(Long id) {
+        Optional<Serie> serie = repository.findById(id);
+
+        if (serie.isPresent()) {
+            Serie serieEncontrada = serie.get();
+            return serieEncontrada.getEpisodios().stream()
+                    .map(EpisodioDTO::new)
+                    .toList();
+        }
+
+        return null;
+    }
+
+    public List<EpisodioDTO> obtemTodosOsEpisodiosPorTemporada(Long id, int numTemporada) {
+        return repository.buscaEpisodiosPorTemporada(id, numTemporada)
+                .stream()
+                .map(EpisodioDTO::new)
+                .toList();
+    }
+
+
+    public List<SerieDTO> obtemSeriesPorGenero(String genero) {
+        Categoria categoria = Categoria.fromPortugues(genero);
+        return converteDados(repository.findByGenero(categoria));
     }
 
     private List<SerieDTO> converteDados(List<Serie> series) {
