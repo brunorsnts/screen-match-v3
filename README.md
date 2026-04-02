@@ -1,59 +1,69 @@
-# Screenmatch V2
+# 🎬 Screenmatch V3
 
-Uma aplicação de linha de comando (CLI) desenvolvida em Spring Boot para buscar, salvar, gerenciar e filtrar dados de séries de TV e seus respectivos episódios. O projeto consome a OMDb API para obter as informações das obras e utiliza a API do Google Gemini para traduzir as sinopses automaticamente para o português.
+O Screenmatch V3 é uma aplicação robusta desenvolvida em Spring Boot que atua de forma dupla: como um sistema interativo de linha de comando (CLI) no terminal e como uma **API RESTful** pronta para consumo web. O projeto consome a OMDb API para buscar, salvar e gerenciar dados de séries de TV e episódios, utilizando a inteligência artificial do Google Gemini (`gemini-2.5-flash`) para traduzir as sinopses originais automaticamente para o português.
 
-## 🚀 Funcionalidades
+## 🚀 O que há de novo na V3?
+Diferente das versões anteriores, esta versão introduz integrações completas para servir o front-end:
+* **Endpoints RESTful**: Exposição inteligente dos dados persistidos no banco de dados, utilizando `DTOs` para entrega padronizada dos JSONs.
+* **CORS Habilitado**: Configuração nativa do projeto permitindo chamadas locais de origens externas na porta padrão `http://127.0.0.1:5500`.
 
-O sistema apresenta um menu interativo com as seguintes opções de busca e gerenciamento:
+## ⚙️ Funcionalidades
 
-* **Buscar Séries na Web**: Consome a API do OMDb para buscar dados de uma série e salva as informações no banco de dados.
-* **Tradução Automática**: Durante a busca, a sinopse original em inglês é traduzida para o português (Brasil) através do modelo `gemini-2.5-flash`.
-* **Buscar Episódios**: Obtém informações detalhadas de todos os episódios de todas as temporadas de uma série pesquisada.
-* **Listar Séries**: Exibe todas as séries já pesquisadas e armazenadas no banco de dados local.
-* **Busca por Título ou Ator**: Permite encontrar séries salvas no banco filtrando por parte do título ou pelo nome de atores.
-* **Top 5 Séries**: Lista as 5 séries com as melhores avaliações do banco de dados.
-* **Busca por Gênero/Categoria**: Filtra séries por categorias predefinidas (Ação, Romance, Comédia, Drama, Crime, Outros).
-* **Busca Filtrada**: Permite buscar séries definindo um número máximo de temporadas e uma avaliação mínima.
-* **Buscar Episódios por Trecho**: Encontra episódios cujo título contenha um trecho de texto especificado.
-* **Top 5 Episódios por Série**: Retorna os 5 melhores episódios de uma série específica baseando-se na avaliação.
-* **Filtrar Episódios por Data**: Exibe os episódios de uma série lançados a partir de um ano informado.
+### 💻 Menu Interativo (CLI)
+Ao executar a aplicação no terminal, você tem um menu interativo com as seguintes operações de gerenciamento:
+* **Buscar Séries e Episódios**: Consome e mapeia os dados JSON da API do OMDb diretamente para o banco de dados.
+* **Listar Séries e Atores**: Exibe as séries armazenadas, permitindo buscar por trechos de títulos ou nome de atores participantes.
+* **Rankings de Avaliação**: Lista o Top 5 das melhores séries e os 5 episódios mais bem avaliados por série.
+* **Filtros Específicos**:
+    * Busca de séries por Gêneros adaptados para português (Ação, Romance, Comédia, Drama, Crime).
+    * Buscas definindo teto máximo de temporadas e notas mínimas de avaliação.
+    * Filtro de episódios por trecho do nome ou a partir de um ano de lançamento específico.
 
-## 🛠️ Tecnologias Utilizadas
+### 🌐 Endpoints da API REST
+O Controller da aplicação mapeia a rota raiz `/series`, disponibilizando os seguintes endpoints:
+* `GET /series`: Retorna todas as séries disponíveis no banco.
+* `GET /series/top5`: Retorna a lista com as 5 séries mais bem avaliadas da base.
+* `GET /series/lancamentos`: Retorna as séries baseadas nas datas dos episódios mais recentes (lançamentos).
+* `GET /series/{id}`: Retorna todos os detalhes mapeados de uma série específica baseando-se no ID.
+* `GET /series/{id}/temporadas/todas`: Busca todos os episódios estruturados de todas as temporadas da série.
+* `GET /series/{id}/temporadas/{numTemporada}`: Retorna a lista de episódios de uma temporada específica informada na rota.
+* `GET /series/categoria/{genero}`: Retorna a lista de séries filtradas por um determinado gênero.
 
+## 🛠️ Tecnologias e Bibliotecas Utilizadas
 * **Java 17**
-* **Spring Boot** (via `CommandLineRunner`)
-* **Spring Data JPA / Hibernate** para persistência de dados
-* **PostgreSQL** como banco de dados relacional
-* **Maven** para gerenciamento de dependências e build
-* **Jackson Databind** para conversão e manipulação de objetos JSON
-* **Google GenAI SDK** (v1.43.0) para integração com a IA do Gemini
-* **OMDb API** para requisição dos dados de entretenimento
+* **Spring Boot** (Incluindo Starters de Web e Data JPA)
+* **PostgreSQL** para o banco de dados (Configurado para geração e update automático das tabelas)
+* **Maven** para o gerenciamento de builds e dependências
+* **Jackson Databind** (v2.15.2) para serialização e manipulação do formato JSON
+* **Google GenAI SDK** (v1.43.0) para conexão à inteligência artificial do Google
+* **OMDb API** para requisição dos metadados das obras em tempo real
 
-## ⚙️ Pré-requisitos e Configuração
+## ⚙️ Configuração e Execução
 
-Para executar o projeto localmente, você precisará ter o **Java 17** e o **PostgreSQL** instalados em sua máquina.
+### Pré-requisitos
+* Ter o Java 17 instalado na máquina.
+* Ter o banco de dados PostgreSQL instalado, configurado e rodando local ou remotamente.
 
 ### Variáveis de Ambiente
-O projeto depende de algumas variáveis de ambiente para se conectar aos serviços externos e ao banco de dados. Configure as seguintes variáveis na sua IDE ou no sistema operacional:
+Antes de rodar a aplicação, assegure-se de injetar no sistema ou na sua IDE as variáveis de configuração de APIs e de banco de dados:
+* `OMDB_API_KEY`: Chave de autenticação adquirida no portal da API OMDb.
+* `GEMINI_API_KEY`: Chave de acesso do Google Gemini Studio para tradução de sinopses.
+* `DB_HOST`: O host do banco de dados (exemplo: `localhost:5432`).
+* `DB_NAME`: Nome da database no PostgreSQL.
+* `DB_USER`: Usuário autenticado para transações no banco.
+* `DB_PASSWORD`: Senha do banco de dados associada ao usuário.
 
-* `OMDB_API_KEY`: Sua chave de acesso para a OMDb API.
-* `GEMINI_API_KEY`: Sua chave de acesso para a API do Google Gemini (necessária para a tradução da sinopse).
-* `DB_HOST`: Host do seu banco de dados PostgreSQL (ex: `localhost:5432`).
-* `DB_NAME`: Nome do banco de dados criado para o projeto.
-* `DB_USER`: Usuário do banco de dados.
-* `DB_PASSWORD`: Senha do banco de dados.
+### Rodando o Projeto
+Utilizando um terminal na raiz do projeto, acesse pelo utilitário Maven contido no diretório:
 
-## 🏃 Como Executar
-
-1. Clone este repositório para sua máquina local.
-2. Certifique-se de que o banco de dados PostgreSQL está rodando e as variáveis de ambiente foram configuradas.
-3. Como o projeto utiliza o **Spring Boot DDL-Auto** definido como `update`, as tabelas (`series`, `episodios`) serão geradas automaticamente na primeira execução.
-4. Navegue até a pasta raiz do projeto e execute a aplicação usando o Maven Wrapper embutido:
-
-No Linux/macOS:
+**Em sistemas Linux / macOS:**
+\```bash
 ./mvnw spring-boot:run
+\```
 
-No Windows:
+**Em sistemas Windows:**
+\```cmd
 mvnw.cmd spring-boot:run
+\```
 
-5. Interaja com o sistema através do menu exibido no terminal.
+Após subir, você poderá utilizar imediatamente os comandos interativos em CLI, e sua API ficará disponível em `http://localhost:8080` (porta padrão do Spring Web).
